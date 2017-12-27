@@ -57,6 +57,54 @@ int go_cart_sph_convert(const go_cart * v, go_sph * s)
 
   return GO_RESULT_OK;
 }
+int go_roty_pose_convert(float ang,go_pose *matrix)
+{
+	go_quat q;
+	go_cart trans;
+
+	go_mat homo;
+	homo.x.x = cos(ang);	homo.x.y = 0;	homo.x.z = sin(ang);
+	homo.y.x = 0;		homo.y.y = 1;	homo.y.z = 0;
+	homo.z.x = -sin(ang);	homo.z.y = 0;	homo.z.z = cos(ang);
+
+	trans.x = 0; trans.y=0;trans.z=0;
+	go_mat_quat_convert(&homo, &q);
+	matrix->rot = q;
+	matrix->tran = trans;
+	return GO_RESULT_OK;
+
+}
+int go_rotz_pose_convert(float ang,go_pose *matrix)
+{
+	go_quat q;
+	go_cart trans;
+
+	go_mat homo;
+	homo.x.x = cos(ang);	homo.x.y = -sin(ang);	homo.x.z = 0;
+	homo.y.x = sin(ang);	homo.y.y = cos(ang);	homo.y.z = 0;
+	homo.z.x = 0;		homo.z.y = 0;		homo.z.z = 1;
+
+	trans.x = 0; trans.y=0;trans.z=0;
+	go_mat_quat_convert(&homo, &q);
+	matrix->rot = q;
+	matrix->tran = trans;
+	return GO_RESULT_OK;
+
+}
+int go_rotx_pose_convert(float ang,go_pose *matrix)
+{
+	go_quat q;
+	go_cart trans;
+	go_mat homo;
+	homo.x.x = 1;		homo.x.y = 0;		homo.x.z = 0;
+	homo.y.x = 0;		homo.y.y = cos(ang);	homo.y.z = sin(ang);
+	homo.z.x = 0;		homo.z.y = -sin(ang);	homo.z.z = cos(ang);
+	trans.x = 0; trans.y=0;trans.z=0;
+	go_mat_quat_convert(&homo, &q);
+	matrix->rot = q;
+	matrix->tran = trans;
+	return GO_RESULT_OK;
+}
 
 int go_cart_cyl_convert(const go_cart * v, go_cyl * c)
 {
@@ -420,7 +468,7 @@ int go_mat_zyx_convert(const go_mat * m, go_zyx * zyx)
     zyx->z = 0;
     zyx->y = GO_PI_2;		/* force it */
     zyx->x = atan2(m->y.x, m->y.y);
-  } else if (GO_ROT_CLOSE(zyx->y, GO_PI_2)) {
+  } else if (GO_ROT_CLOSE(zyx->y, -GO_PI_2)) {
     zyx->z = 0;
     zyx->y = -GO_PI_2;		/* force it */
     zyx->x = -atan2(m->y.z, m->y.y);
@@ -440,7 +488,7 @@ int go_mat_rpy_convert(const go_mat * m, go_rpy * rpy)
     rpy->r = atan2(m->y.x, m->y.y);
     rpy->p = GO_PI_2;		/* force it */
     rpy->y = 0;
-  } else if (GO_ROT_CLOSE(rpy->p, GO_PI_2)) {
+  } else if (GO_ROT_CLOSE(rpy->p, -GO_PI_2)) {
     rpy->r = -atan2(m->y.z, m->y.y);
     rpy->p = -GO_PI_2;		/* force it */
     rpy->y = 0;
@@ -2677,7 +2725,6 @@ int ludcmp(go_real ** a,
 {
   go_integer i, imax, j, k;
   go_real big, dum, sum, temp;
-
   *d = 1.0;
   for (i = 0; i < n; i++) {
     big = 0.0;
@@ -2685,8 +2732,9 @@ int ludcmp(go_real ** a,
       if ((temp = fabs(a[i][j])) > big)
 	big = temp;
     if (big < go_singular_epsilon)
-      return GO_RESULT_SINGULAR;
-    scratchrow[i] = 1.0 / big;
+	return GO_RESULT_SINGULAR;
+
+   scratchrow[i] = 1.0 / big;
   }
   for (j = 0; j < n; j++) {
     for (i = 0; i < j; i++) {
@@ -3050,8 +3098,8 @@ int go_matrix_inv(const go_matrix * m, /* M x N */
   int retval;
 
   /* check for fixed matrix */
-  if (0 == m->el[0] || 0 == minv->el[0]) return GO_RESULT_ERROR;
-
+  if (0 == m->el[0] || 0 == minv->el[0]) 
+	return GO_RESULT_ERROR;
   N = m->rows;
 
   /* copy of m since ludcmp destroys input matrix */
@@ -3063,8 +3111,11 @@ int go_matrix_inv(const go_matrix * m, /* M x N */
 
   /* convert the copy to its LU decomposition  */
   retval = ludcmp(m->elcpy, m->v, N, m->index, &d);
-  if (GO_RESULT_OK != retval) return retval;
+  if (GO_RESULT_OK != retval) 
+{
 
+return retval;
+}
   /* backsubstitute a column with a 1 in it to get the inverse */
   for (col = 0; col < N; col++) {
     for (row = 0; row < N; row++) {
@@ -3072,7 +3123,8 @@ int go_matrix_inv(const go_matrix * m, /* M x N */
     }
     m->v[col] = 1.0;
     retval = lubksb(m->elcpy, N, m->index, m->v);
-    if (GO_RESULT_OK != retval) return retval;
+    if (GO_RESULT_OK != retval) 
+return retval;
     for (row = 0; row < N; row++) {
       minv->el[row][col] = m->v[row];
     }

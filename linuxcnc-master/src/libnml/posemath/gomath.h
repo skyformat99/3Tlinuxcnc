@@ -318,7 +318,9 @@ extern int go_cyl_cart_convert(const go_cyl *, go_cart *);
 extern int go_cyl_sph_convert(const go_cyl *, go_sph *);
 
 /* rotation rep conversion functions */
-
+extern int go_rotx_pose_convert(float a,go_pose *matrix);
+extern int go_roty_pose_convert(float a,go_pose *matrix);
+extern int go_rotz_pose_convert(float a,go_pose *matrix);
 extern int go_rvec_quat_convert(const go_rvec *, go_quat *);
 extern int go_rvec_mat_convert(const go_rvec *, go_mat *);
 extern int go_rvec_zyz_convert(const go_rvec *, go_zyz *);
