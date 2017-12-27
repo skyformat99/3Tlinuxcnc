@@ -276,7 +276,9 @@ HEADERS := \
     emc/kinematics/kinematics.h \
     emc/kinematics/genhexkins.h \
     emc/kinematics/genserkins.h \
+    emc/kinematics/3Tgenserkins.h \
     emc/kinematics/pumakins.h \
+emc/kinematics/7dofkins.h \
     emc/tp/tc.h \
     emc/tp/tc_types.h \
     emc/tp/tcq.h \
@@ -938,10 +940,20 @@ genserkins-objs := emc/kinematics/genserkins.o
 genserkins-objs += libnml/posemath/gomath.o
 genserkins-objs += libnml/posemath/sincos.o $(MATHSTUB)
 
+obj-m += 3Tgenserkins.o
+3Tgenserkins-objs := emc/kinematics/3Tgenserkins.o
+3Tgenserkins-objs += libnml/posemath/gomath.o
+3Tgenserkins-objs += libnml/posemath/sincos.o $(MATHSTUB)
+
 obj-m += pumakins.o
 pumakins-objs := emc/kinematics/pumakins.o
 pumakins-objs += libnml/posemath/_posemath.o
 pumakins-objs += libnml/posemath/sincos.o $(MATHSTUB)
+
+obj-m += 7dofkins.o
+7dofkins-objs := emc/kinematics/7dofkins.o
+7dofkins-objs += libnml/posemath/_posemath.o
+7dofkins-objs += libnml/posemath/sincos.o $(MATHSTUB)
 
 obj-m += scarakins.o
 scarakins-objs := emc/kinematics/scarakins.o
@@ -1075,7 +1087,9 @@ endif
 ../rtlib/lineardeltakins$(MODULE_EXT): $(addprefix objects/rt,$(lineardeltakins-objs))
 ../rtlib/genhexkins$(MODULE_EXT): $(addprefix objects/rt,$(genhexkins-objs))
 ../rtlib/genserkins$(MODULE_EXT): $(addprefix objects/rt,$(genserkins-objs))
+../rtlib/3Tgenserkins$(MODULE_EXT): $(addprefix objects/rt,$(3Tgenserkins-objs))
 ../rtlib/pumakins$(MODULE_EXT): $(addprefix objects/rt,$(pumakins-objs))
+../rtlib/7dofkins$(MODULE_EXT): $(addprefix objects/rt,$(7dofkins-objs))
 ../rtlib/scarakins$(MODULE_EXT): $(addprefix objects/rt,$(scarakins-objs))
 ../rtlib/rotarydeltakins$(MODULE_EXT): $(addprefix objects/rt,$(rotarydeltakins-objs))
 ../rtlib/xyzac-trt-kins$(MODULE_EXT): $(addprefix objects/rt,$(xyzac-trt-kins-objs))
