@@ -2731,9 +2731,7 @@ int ludcmp(go_real ** a,
     for (j = 0; j < n; j++)
       if ((temp = fabs(a[i][j])) > big)
 	big = temp;
-    if (big < go_singular_epsilon)
-	return GO_RESULT_SINGULAR;
-
+if (big < go_singular_epsilon) return GO_RESULT_SINGULAR;
    scratchrow[i] = 1.0 / big;
   }
   for (j = 0; j < n; j++) {
@@ -2765,8 +2763,7 @@ int ludcmp(go_real ** a,
       scratchrow[imax] = scratchrow[j];
     }
     indx[j] = imax;
-    if (fabs(a[j][j]) < go_singular_epsilon)
-      return GO_RESULT_SINGULAR;
+    if (fabs(a[j][j]) < go_singular_epsilon) return GO_RESULT_SINGULAR;
     if (j != n - 1) {
       dum = 1.0 / (a[j][j]);
       for (i = j + 1; i < n; i++)
@@ -2816,8 +2813,7 @@ int lubksb(go_real ** a,
     sum = b[i];
     for (j = i + 1; j < n; j++)
       sum -= a[i][j] * b[j];
-    if (fabs(a[i][i]) < go_singular_epsilon)
-      return GO_RESULT_SINGULAR;
+    if (fabs(a[i][i]) < go_singular_epsilon) return GO_RESULT_SINGULAR;
     b[i] = sum / a[i][i];
   }
 
