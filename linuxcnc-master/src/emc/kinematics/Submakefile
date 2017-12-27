@@ -4,6 +4,10 @@ GENSERKINSSRCS := \
 	emc/kinematics/genserkins.c
 USERSRCS += $(GENSERKINSSRCS)
 
+3TGENSERKINSSRCS := \
+	emc/kinematics/3Tgenserkins.c
+USERSRCS += $(3TGENSERKINSSRCS)
+
 DELTAMODULESRCS := emc/kinematics/lineardeltakins.cc
 PYSRCS += $(DELTAMODULESRCS)
 $(call TOOBJS, $(DELTAMODULESRCS)): CFLAGS += -x c++ -Wno-declaration-after-statement
@@ -18,6 +22,11 @@ PYTARGETS += $(DELTAMODULE)
 	$(ECHO) Linking $(notdir $@)
 	$(Q)$(CC) $(LDFLAGS) -o $@ $^
 TARGETS += ../bin/genserkins
+
+../bin/3Tgenserkins: $(call TOOBJS, $(3TGENSERKINSSRCS)) ../lib/liblinuxcnchal.so ../lib/libposemath.so
+	$(ECHO) Linking $(notdir $@)
+	$(Q)$(CC) $(LDFLAGS) -o $@ $^
+TARGETS += ../bin/3Tgenserkins
 
 RDELTAMODULESRCS := emc/kinematics/rotarydeltakins.cc
 PYSRCS += $(RDELTAMODULESRCS)
